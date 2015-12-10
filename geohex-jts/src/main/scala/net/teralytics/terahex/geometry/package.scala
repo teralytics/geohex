@@ -1,8 +1,8 @@
 package net.teralytics.terahex
 
-import com.vividsolutions.jts.geom.{ Point => GeoPoint, MultiPolygon, Polygon, GeometryFactory, Coordinate }
+import com.vividsolutions.jts.geom.{ Coordinate, GeometryFactory, MultiPolygon, Point => GeoPoint, Polygon }
 
-object GeoConversions {
+package object geometry {
 
   implicit class LatLonGeoOps(val loc: LatLon) extends AnyVal {
 

@@ -1,9 +1,9 @@
-package net.teralytics.terahex.hex
+package net.teralytics.terahex.testing
 
-import net.teralytics.terahex.Generators._
-import org.scalatest.{ Matchers, FlatSpec }
-import org.scalatest.prop.PropertyChecks
 import net.teralytics.terahex._
+import net.teralytics.terahex.testing.Generators._
+import org.scalatest.prop.PropertyChecks
+import org.scalatest.{ FlatSpec, Matchers }
 
 class HexSpec extends FlatSpec with PropertyChecks with Matchers {
 
