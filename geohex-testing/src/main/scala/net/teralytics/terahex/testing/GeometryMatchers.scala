@@ -1,4 +1,4 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
 import com.vividsolutions.jts.geom.Geometry
 import org.scalatest.enablers.Containing

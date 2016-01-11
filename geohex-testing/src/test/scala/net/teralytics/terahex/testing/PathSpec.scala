@@ -1,8 +1,9 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
 import com.vividsolutions.jts.geom.{ GeometryFactory, PrecisionModel }
-import net.teralytics.terahex.GeoConversions._
-import net.teralytics.terahex.Generators._
+import net.teralytics.terahex.geometry._
+import net.teralytics.terahex.testing.Generators._
+import net.teralytics.terahex.Zone
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.{ FlatSpec, Matchers }
 

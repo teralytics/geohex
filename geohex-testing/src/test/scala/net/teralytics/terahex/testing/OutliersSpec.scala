@@ -1,5 +1,6 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
+import net.teralytics.terahex._
 import org.scalatest.{ Matchers, FlatSpec }
 import org.scalatest.prop.PropertyChecks
 

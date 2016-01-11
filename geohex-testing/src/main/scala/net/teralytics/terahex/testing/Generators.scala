@@ -1,6 +1,6 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
-import net.teralytics.terahex.hex._
+import net.teralytics.terahex._
 import org.scalacheck.Gen._
 
 import scala.math._

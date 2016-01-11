@@ -30,7 +30,7 @@ val jsModuleWrapper =
       |});""".stripMargin)
 
 lazy val root = project.in(file(".")).
-  aggregate(geohexJS, geohexJVM).
+  aggregate(geohexJS, geohexJVM, geohexJts, geohexTesting).
   settings(
     scalaVersion := mainScalaVersion,
     crossScalaVersions := Seq(mainScalaVersion, "2.10.5"),
@@ -38,23 +38,41 @@ lazy val root = project.in(file(".")).
     publishLocal := {}
   )
 
-lazy val geohex = crossProject.in(file(".")).
-  settings(
-    organization := "net.teralytics",
-    name := "geohex",
-    version := "0.1." + sys.env.getOrElse("TRAVIS_BUILD_NUMBER", "0-SNAPSHOT"),
-    scalaVersion := mainScalaVersion,
-    licenses +=("MIT", url("http://opensource.org/licenses/MIT"))
-  ).
-  jvmSettings(
+val commonSettings = Seq(
+  organization := "net.teralytics",
+  version := "0.1." + sys.env.getOrElse("TRAVIS_BUILD_NUMBER", "0-SNAPSHOT"),
+  scalaVersion := mainScalaVersion,
+  licenses +=("MIT", url("http://opensource.org/licenses/MIT")),
+  bintrayOrganization := Some("teralytics")
+)
+
+val libs = new {
+
+  val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
+
+  val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.12.5"
+
+  val testingLibs = Seq(
+    scalaTest % "test",
+    scalaCheck % "test")
+
+  val json = "io.spray" %% "spray-json" % "1.3.2"
+
+  val jts = "com.vividsolutions" % "jts" % "1.13"
+}
+
+lazy val geohex = crossProject.in(file("."))
+  .settings(commonSettings: _*)
+  .settings(
+    name := "geohex"
+  )
+  .jvmSettings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-      "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-      "io.spray" %% "spray-json" % "1.3.2" % "test",
-      "com.vividsolutions" % "jts" % "1.13" % "test"),
-    bintrayOrganization := Some("teralytics")
-  ).
-  jsSettings(
+      libs.json % "test",
+      libs.jts % "test"),
+    libraryDependencies ++= libs.testingLibs
+  )
+  .jsSettings(
     scalaJSOutputWrapper := jsModuleWrapper,
     npmPublish := {
       "rm -rf npm-tar" #&&
@@ -70,3 +88,22 @@ lazy val geohex = crossProject.in(file(".")).
 lazy val geohexJVM = geohex.jvm
 
 lazy val geohexJS = geohex.js
+
+lazy val geohexJts = project.in(file("geohex-jts"))
+  .dependsOn(geohexJVM)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "geohex-jts",
+    libraryDependencies ++= Seq(
+      libs.jts)
+  )
+
+lazy val geohexTesting = project.in(file("geohex-testing"))
+  .dependsOn(geohexJts)
+  .settings(commonSettings: _*)
+  .settings(
+    name := "geohex-testing",
+    libraryDependencies ++= Seq(
+      libs.scalaTest,
+      libs.scalaCheck)
+  )

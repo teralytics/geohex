@@ -1,7 +1,9 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
-import org.scalatest.{ Matchers, FlatSpec }
+import net.teralytics.terahex._
 import org.scalatest.prop.PropertyChecks
+import org.scalatest.{ FlatSpec, Matchers }
+
 import scala.math._
 
 class ZoneSpec extends FlatSpec with PropertyChecks with Matchers {

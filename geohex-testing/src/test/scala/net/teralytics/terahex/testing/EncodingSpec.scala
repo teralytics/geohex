@@ -1,6 +1,7 @@
-package net.teralytics.terahex
+package net.teralytics.terahex.testing
 
-import net.teralytics.terahex.Generators._
+import net.teralytics.terahex._
+import net.teralytics.terahex.testing.Generators._
 import org.scalatest.{ Matchers, FlatSpec }
 import org.scalatest.prop.PropertyChecks
 
