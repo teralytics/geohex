@@ -6,9 +6,13 @@ import js.JSConverters._
 
 @JSExport("terahex")
 @JSExportAll
-object TeraHex {
+object TeraHex extends GridJs(300)
 
-  private[this] implicit val grid: Grid = Grid(300)
+@JSExportAll
+@JSName("Grid")
+class GridJs(rootSize: Double) {
+
+  private[this] implicit val grid: Grid = Grid(rootSize)
   private[this] implicit val encoding: Encoding[String] = StringEncoding
 
   def encode(lon: Double, lat: Double, level: Int): String = zoneByLocation(lon, lat, level).code
@@ -23,6 +27,8 @@ object TeraHex {
     Zone.zonesWithin(LatLon(Lon(fromLon), Lat(fromLat)) -> LatLon(Lon(toLon), Lat(toLat)), level)
       .map(new ZoneJs(_))
       .toJSArray
+
+  def withRootSize(size: Double): GridJs = new GridJs(size)
 }
 
 object StringEncoding extends Encoding[String] {
