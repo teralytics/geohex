@@ -22,8 +22,8 @@ function showZone(map, loc, level) {
 
 function coverBoundingBox(bbox, level) {
     var map = window.map;
-    var [[fromLat, fromLon], [toLat, toLon]] = bbox;
-    var zones = terahex.zonesWithin(fromLon, fromLat, toLon, toLat, level);
+    var [from, to] = bbox;
+    var zones = terahex.zonesWithin(from.lng, from.lat, to.lng, to.lat, level);
     zones.forEach(function (z) {
         omnivore.wkt
             .parse(z.wellKnownText)
@@ -31,6 +31,35 @@ function coverBoundingBox(bbox, level) {
     });
     L.rectangle(bbox, {color: "#ff7800", weight: 1}).addTo(map);
     map.fitBounds(bbox, { padding: [20, 20] });
+}
+
+function rectangleCoverage(map) {
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    var drawControl = new L.Control.Draw({
+        draw: {
+            circle: false,
+            rectangle: true,
+            marker: false,
+            polyline: false,
+            polygon: false
+        },
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+
+    map.on('draw:created', function (e) {
+        if (e.layerType === 'rectangle') {
+            map.addLayer(e.layer);
+            coverBoundingBox([
+                e.layer.getBounds().getSouthWest(),
+                e.layer.getBounds().getNorthEast()],
+                findRightLevel(map));
+        }
+    });
 }
 
 window.onload = function() {
@@ -43,6 +72,7 @@ window.onload = function() {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    rectangleCoverage(map);
 
     function onMapClick(e) {
         var level = findRightLevel(map);
@@ -51,5 +81,5 @@ window.onload = function() {
 
     map.on('click', onMapClick);
 
-    //coverBoundingBox([[-33, -40], [33, 40]], 3);
+    //coverBoundingBox([{ lat: -33, lng: -40 }, { lat: 33, lng: 40}], 3);
 }
