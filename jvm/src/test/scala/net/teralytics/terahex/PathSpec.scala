@@ -65,11 +65,4 @@ class PathSpec extends FlatSpec with PropertyChecks with Matchers with GeometryM
       all(locations.map(_.lat.lat)) should fitIntoLatRange
       all(locations.map(_.lon.lon)) should fitIntoLonRange
     }
-
-  "Hexagon coverage of a bounding box" should "gracefully handle locations outside of domain" in
-    forAll(locationsOutsideOfDomain, locationsOutsideOfDomain) { (from, to) =>
-      val locations = Zone.zonesWithin(from -> to, 3)(Grid(300)).map(_.location)
-      all(locations.map(_.lat.lat)) should fitIntoLatRange
-      all(locations.map(_.lon.lon)) should fitIntoLonRange
-    }
 }

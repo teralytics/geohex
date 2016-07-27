@@ -22,12 +22,14 @@ function showZone(map, loc, level) {
 
 function coverBoundingBox(bbox, level) {
     var map = window.map;
+    console.log(bbox);
     var [from, to] = bbox;
     var zones = terahex.zonesWithin(from.lng, from.lat, to.lng, to.lat, level);
     zones.forEach(function (z) {
         omnivore.wkt
             .parse(z.wellKnownText)
             .addTo(map);
+        console.log(z.code)
     });
     L.rectangle(bbox, {color: "#ff7800", weight: 1}).addTo(map);
     map.fitBounds(bbox, { padding: [20, 20] });
@@ -81,5 +83,9 @@ window.onload = function() {
 
     map.on('click', onMapClick);
 
-    //coverBoundingBox([{ lat: -33, lng: -40 }, { lat: 33, lng: 40}], 3);
+//    coverBoundingBox([{lat: 40.71916022743469, lng: -73.8332748413086},
+//                      {lat: 40.74478596665598, lng: -73.76083374023438}], 9);
+//
+//    coverBoundingBox([{lat: 40.72332345541449, lng: -73.61801147460938},
+//                      {lat: 40.81276986422275, lng: -73.35090637207031}], 8);
 }
