@@ -39,6 +39,16 @@ case class Zone(rootSize: Double, cells: Seq[Cell]) {
       .toSeq
   }
 
+  def leftLon = location.lon.lon - size
+
+  def bottomLeftLon = location.lon.lon - size / 2
+
+  def rightLon = location.lon.lon + size
+
+  def bottomLat = geometry.map(_.lat).minBy(_.lat)
+
+  def topLat = geometry.map(_.lat).maxBy(_.lat)
+
   def moveN: Zone = move(_.moveN)
 
   def moveS: Zone = move(_.moveS)
@@ -72,33 +82,24 @@ object Zone {
   def zonesWithin(boundingBox: (LatLon, LatLon), level: Int)(implicit grid: Grid): Stream[Zone] = {
 
     val (from, to) = LatLon.mercatorBoundingBox(boundingBox)
-    val start = Zone(from, level)
-    val end = Zone(to, level)
+    val start = {
+      val fromZone = Zone(from, level)
+      if (fromZone.bottomLeftLon > from.lon.lon)
+        Zone(from.copy(lon = Lon(from.lon.lon - fromZone.size)), level)
+      else fromZone
+    }
 
-    val eastPattern: Seq[Zone => Zone] = Seq(_.moveNE, _.moveSE)
+    def moveEast(z: Zone) = Zone(LatLon(Lon(z.location.lon.lon + 1.5 * z.size), from.lat), level)
+    val towardsEast = start #:: Stream.iterate(start)(moveEast)
+      .tail.takeWhile(z => z.leftLon < to.lon.lon && z.rightLon + z.size < LatLon.maxLon)
 
-    def notReachedEast(loc: LatLon) =
-      start.location.lon.lon <= loc.lon.lon &&
-        loc.lon.lon <= end.location.lon.lon
-
-    def latWithinBounds(loc: LatLon) =
-      loc.lat.lat + start.innerRadius > from.lat.lat &&
-      loc.lat.lat - start.innerRadius < to.lat.lat
-
-    def towardsEast(start: Zone) = Stream
-      .continually(eastPattern).flatten
-      .scanLeft(start)((z, move) => move(z))
-      .takeWhile(z => notReachedEast(z.location))
-      .filter(z => latWithinBounds(z.location))
-
-    val towardsNorth = Stream
-      .iterate(start)(_.moveN)
-      .takeWhile(_.location.lat.lat <= end.location.lat.lat)
+    def towardsNorth(z0: Zone) = z0 #:: Stream.iterate(z0)(_.moveN)
+      .tail.takeWhile(z => z.bottomLat.lat < to.lat.lat && z.topLat.lat < LatLon.maxMercatorLat)
 
     for {
-      sn <- towardsNorth
-      we <- towardsEast(sn)
-    } yield we
+      we <- towardsEast
+      sn <- towardsNorth(we)
+    } yield sn
   }
 
   def zonesBetween(line: (LatLon, LatLon), level: Int)(implicit grid: Grid): Seq[Zone] = {
