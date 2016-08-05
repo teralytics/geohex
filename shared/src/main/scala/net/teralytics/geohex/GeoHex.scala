@@ -17,6 +17,17 @@ object GeoHex {
     zones.distinct
   }
 
+  def getZonesWithin(bc: BoundingCircle, level: Int): Seq[Zone] = {
+    val ((fromLat, fromLon), (toLat, toLon)) = bc.toBoundingBox
+    val step = circumradiusInDegrees(level) / 2
+    val zones = for {
+      lat <- fromLat to toLat by step
+      lon <- fromLon to toLon by step
+      if bc.contains(lat, lon)
+    } yield getZoneByLocation(lat, lon, level)
+    zones.distinct
+  }
+
   def getZoneByCode(code: String): Zone = {
 
     val (h_x: Long, h_y: Long) = Encoding.decode(code)

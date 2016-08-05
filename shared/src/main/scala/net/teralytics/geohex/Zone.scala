@@ -68,3 +68,17 @@ case class Zone(code: String, lat: Double = 0, lon: Double = 0, x: Long = 0, y: 
       Loc(h_btm, h_cl))
   }
 }
+
+case class BoundingCircle(centre: Loc, radiusDeg: Double) {
+  import Math.pow
+
+  def toBoundingBox: BoundingBox = {
+    val minLatitude = centre.lat - radiusDeg
+    val maxLatitude = centre.lat + radiusDeg
+    val minLongitude = centre.lon - radiusDeg
+    val maxLongitude = centre.lon + radiusDeg
+    ((minLatitude, minLongitude), (maxLatitude, maxLongitude))
+  }
+  def contains(latitude: Double, longitude: Double) =
+    pow(latitude - centre.lat, 2) + pow(longitude - centre.lon, 2) <= pow(radiusDeg, 2)
+}
