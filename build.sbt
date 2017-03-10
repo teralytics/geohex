@@ -1,6 +1,6 @@
 import scala.language.postfixOps
 
-val mainScalaVersion = "2.11.7"
+val mainScalaVersion = "2.12.1"
 
 lazy val npmPublish = taskKey[Unit]("Publish NPM package")
 
@@ -33,7 +33,7 @@ lazy val root = project.in(file(".")).
   aggregate(geohexJS, geohexJVM).
   settings(
     scalaVersion := mainScalaVersion,
-    crossScalaVersions := Seq(mainScalaVersion, "2.10.5"),
+    crossScalaVersions := Seq(mainScalaVersion, "2.11.8", "2.10.6"),
     publish := {},
     publishLocal := {}
   )
@@ -48,9 +48,9 @@ lazy val geohex = crossProject.in(file(".")).
   ).
   jvmSettings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-      "org.scalacheck" %% "scalacheck" % "1.12.5" % "test",
-      "io.spray" %% "spray-json" % "1.3.2" % "test",
+      "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+      "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
+      "io.spray" %% "spray-json" % "1.3.3" % "test",
       "com.vividsolutions" % "jts" % "1.13" % "test"),
     bintrayOrganization := Some("teralytics")
   ).
@@ -61,7 +61,7 @@ lazy val geohex = crossProject.in(file(".")).
         "mkdir npm-tar" #&&
         "npm install -g npm" #&&
         s"npm version ${version.value} --no-git-tag-version --force" #&&
-        "cp package.json README.md js/target/scala-2.11/geohex-opt.js npm-tar" #&&
+        s"cp package.json README.md js/target/scala-${scalaBinaryVersion.value}/geohex-opt.js npm-tar" #&&
         "tar -cf npm.tar npm-tar" #&&
         "npm publish npm.tar" !
     }
