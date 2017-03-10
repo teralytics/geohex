@@ -11,6 +11,9 @@ script:
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
+jdk:
+  - oraclejdk8
+
 after_success: >
   test "${TRAVIS_PULL_REQUEST}" = 'false' &&
   test "${TRAVIS_BRANCH}" = 'master' &&
