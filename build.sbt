@@ -44,6 +44,7 @@ lazy val geohex = crossProject.in(file(".")).
     name := "geohex",
     version := "0.1." + sys.env.getOrElse("TRAVIS_BUILD_NUMBER", "0-SNAPSHOT"),
     scalaVersion := mainScalaVersion,
+    crossScalaVersions := Seq("2.11.12"),
     licenses +=("MIT", url("http://opensource.org/licenses/MIT"))
   ).
   jvmSettings(
@@ -51,7 +52,9 @@ lazy val geohex = crossProject.in(file(".")).
       "org.scalatest" %% "scalatest" % "3.0.1" % "test",
       "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
       "io.spray" %% "spray-json" % "1.3.3" % "test",
-      "com.vividsolutions" % "jts" % "1.13" % "test"),
+      "com.vividsolutions" % "jts" % "1.13" % "test",
+      "org.apache.spark" %% "spark-sql" % "2.2.0"
+    ),
     bintrayOrganization := Some("teralytics")
   ).
   jsSettings(
