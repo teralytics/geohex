@@ -33,7 +33,7 @@ lazy val root = project.in(file(".")).
   aggregate(geohexJS, geohexJVM).
   settings(
     scalaVersion := mainScalaVersion,
-    crossScalaVersions := Seq(mainScalaVersion, "2.11.8", "2.10.6"),
+    crossScalaVersions := Seq(mainScalaVersion, "2.11.12", "2.10.6"),
     publish := {},
     publishLocal := {}
   )
@@ -51,7 +51,8 @@ lazy val geohex = crossProject.in(file(".")).
       "org.scalatest" %% "scalatest" % "3.0.1" % "test",
       "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
       "io.spray" %% "spray-json" % "1.3.3" % "test",
-      "com.vividsolutions" % "jts" % "1.13" % "test"),
+      "com.vividsolutions" % "jts" % "1.13" % "test",
+      "org.apache.spark" %% "spark-sql" % "2.4.5" % "provided"),
     bintrayOrganization := Some("teralytics")
   ).
   jsSettings(
