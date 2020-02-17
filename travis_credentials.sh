@@ -1,9 +1,5 @@
 #!/bin/bash
 
-set -x
-
-echo "Running travis_credentials script"
-
 mkdir -p ~/.bintray
 FILE=~/.bintray/.credentials
 cat <<EOF >$FILE
