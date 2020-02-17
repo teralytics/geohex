@@ -88,7 +88,7 @@ class CompatibilityTest extends FunSuite with Matchers {
   }
 
   private def readResource(path: String): String = {
-    io.Source.fromInputStream(getClass.getResourceAsStream(path)).mkString
+    scala.io.Source.fromInputStream(getClass.getResourceAsStream(path)).mkString
   }
 
   private def assertDouble(expected: Double, actual: Double) {
