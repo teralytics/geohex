@@ -33,7 +33,7 @@ lazy val root = project.in(file(".")).
   aggregate(geohexJS, geohexJVM).
   settings(
     scalaVersion := mainScalaVersion,
-    crossScalaVersions := Seq(mainScalaVersion, "2.11.12", "2.10.6"),
+    crossScalaVersions := Seq(mainScalaVersion, "2.11.12"),
     publish := {},
     publishLocal := {}
   )
