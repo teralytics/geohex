@@ -1,5 +1,6 @@
 package net.teralytics.terahex
 
+import org.apache.spark.sql.api.java.UDF3
 
 object TeraHex {
 
@@ -16,9 +17,9 @@ object TeraHex {
   def size(level: Int): Double = grid.size(level)
 }
 
-object TeraHexSpark {
-  import org.apache.spark.sql.expressions.UserDefinedFunction
-  import org.apache.spark.sql.functions.udf
+object TeraHexSparkUDF extends UDF3[Double, Double, Integer, Long] {
 
-  def getUdf(level: Int): UserDefinedFunction = udf((lat: Double, lon: Double) => TeraHex.encode(LatLon(Lon(lon),Lat(lat)), level))
+  override def call(longitude: Double, latitude: Double, level: Integer): Long = {
+    TeraHex.encode(LatLon(Lon(longitude), Lat(latitude)), level)
+  }
 }
