@@ -15,3 +15,10 @@ object TeraHex {
 
   def size(level: Int): Double = grid.size(level)
 }
+
+object TeraHexSpark {
+  import org.apache.spark.sql.expressions.UserDefinedFunction
+  import org.apache.spark.sql.functions.udf
+
+  def getUdf(level: Int): UserDefinedFunction = udf((lat: Double, lon: Double) => TeraHex.encode(LatLon(Lon(lon),Lat(lat)), level))
+}
