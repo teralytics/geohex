@@ -16,10 +16,3 @@ object TeraHex {
 
   def size(level: Int): Double = grid.size(level)
 }
-
-object TeraHexSparkUDF extends UDF3[Double, Double, Integer, Long] {
-
-  override def call(longitude: Double, latitude: Double, level: Integer): Long = {
-    TeraHex.encode(LatLon(Lon(longitude), Lat(latitude)), level)
-  }
-}
