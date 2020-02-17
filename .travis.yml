@@ -12,7 +12,7 @@ script:
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 after_success: >
   test "${TRAVIS_PULL_REQUEST}" = 'false' &&
