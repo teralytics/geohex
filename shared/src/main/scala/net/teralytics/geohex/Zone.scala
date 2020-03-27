@@ -46,9 +46,12 @@ case class Zone(code: String, lat: Double = 0, lon: Double = 0, x: Long = 0, y: 
 
   val size: Double = circumradiusInMetersAtEquator(level)
 
-  def toWellKnownText: String = getHexCoords
-    .map(loc => s"${loc.lon} ${loc.lat}")
-    .mkString("POLYGON ((", ", ", "))")
+  def toWellKnownText: String = {
+    val polygons = getHexCoords
+    (polygons :+ polygons.head)
+      .map(loc => s"${loc.lon} ${loc.lat}")
+      .mkString("POLYGON ((", ", ", "))")
+  }
 
   def getHexCoords: Array[Loc] = {
     val xy = loc2xy(lon, lat)

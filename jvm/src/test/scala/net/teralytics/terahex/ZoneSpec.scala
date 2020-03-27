@@ -4,6 +4,9 @@ import org.scalatest.{ Matchers, FlatSpec }
 import org.scalatest.prop.PropertyChecks
 import scala.math._
 
+import com.vividsolutions.jts.geom.{GeometryFactory, PrecisionModel}
+import com.vividsolutions.jts.io.{WKTReader}
+
 class ZoneSpec extends FlatSpec with PropertyChecks with Matchers {
 
   import Generators._
@@ -45,5 +48,14 @@ class ZoneSpec extends FlatSpec with PropertyChecks with Matchers {
     val codes = Zone.zonesWithin(LatLon(Lon(-50), Lat(-50)) -> LatLon(Lon(50), Lat(50)), 5)
       .map(_.code)
     codes should contain theSameElementsInOrderAs codes.distinct
+  }
+
+  it should "create a WellKnownText in which the starting point is equal to the ending point" in {
+    implicit val grid = TeraHex.grid
+    val defaultSRID = 4326
+    val zones = Zone.zonesWithin(LatLon(Lon(51), Lat(21)) -> LatLon(Lon(56), Lat(22)), 5)
+    val factory = new GeometryFactory(new PrecisionModel(1e7), defaultSRID)
+    val zoneCoords = new WKTReader(factory).read(zones.head.toWellKnownText).getCoordinates
+    zoneCoords.head should equal(zoneCoords.last)
   }
 }
